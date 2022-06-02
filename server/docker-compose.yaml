@@ -6,11 +6,8 @@ services:
     ports: 
       - 3000:3000
     environment:
-      - PGUSER=authuser
-      - PGHOST=db
-      - PGPASSWORD=authpass
-      - PGDATABASE=authdb
-      - PGPORT=5432
+      - DB_NAME=shopping
+      - DB_CONNECTION=mongodb://shopuser:shoppass@db:27017
     depends_on:
       - db
     volumes:
@@ -25,8 +22,8 @@ services:
       - "dbdata:/var/lib/mongodb/data"
       - "./db/seeds.js:/docker-entrypoint-initdb.d/seeds.js:ro"
     environment: 
-      - MONGO_INITDB_ROOT_USERNAME=authuser
-      - MONGO_INITDB_DATABASE=authdb
-      - MONGO_INITDB_ROOT_PASSWORD=authpass
+      - MONGO_INITDB_ROOT_USERNAME=shopuser
+      - MONGO_INITDB_DATABASE=shopping
+      - MONGO_INITDB_ROOT_PASSWORD=shoppass
 volumes:
   dbdata:
