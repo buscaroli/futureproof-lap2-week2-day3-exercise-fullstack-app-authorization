@@ -3,8 +3,8 @@ const router = express.Router()
 
 const User = require('../models/user')
 
-router.post('/', async (req, res) => {
-  const payload = req.body
+router.get('/:email', async (req, res) => {
+  const payload = req.params.email
   console.log('payload ', payload)
   try {
     const foundUser = await User.findByEmail(payload)

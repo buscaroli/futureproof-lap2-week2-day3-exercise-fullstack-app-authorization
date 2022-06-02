@@ -10,15 +10,12 @@ class User {
     this.basket = []
   }
 
-  static findByEmail(data) {
+  static findByEmail(email) {
     return new Promise(async (resolve, reject) => {
-      console.log('data ', data)
+      console.log('email ', email)
       try {
         const db = await init()
-        const foundUser = await db
-          .collection('users')
-          .find({ email: data.email })
-          .toArray()
+        const foundUser = await db.collection('users').find({ email }).toArray()
         console.log('foundUser -> ', foundUser)
         const user = new User({ ...foundUser[0], id: foundUser[0]._id })
         resolve(user)
