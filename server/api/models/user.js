@@ -1,17 +1,16 @@
 const { init } = require('../dbConfig')
 const { ObjectId } = require('mongodb')
-const { v4: uuidv4 } = require('uuid')
 
 class User {
-  constructor({ name, email, password }) {
-    this.id = uuidv4()
+  constructor({ id, name, email, password }) {
+    this.id = id
     this.name = name
     this.email = email
     this.password = password
     this.basket = []
   }
 
-  static findByEmail() {
+  static findByEmail(data) {
     return new Promise(async (resolve, reject) => {
       console.log('data ', data)
       try {
@@ -21,14 +20,10 @@ class User {
           .find({ email: data.email })
           .toArray()
         console.log('foundUser -> ', foundUser)
-        const user = new User({
-          name: foundUser.name,
-          email: foundUser.email,
-          password: foundUser.password,
-        })
+        const user = new User({ ...foundUser[0], id: foundUser[0]._id })
         resolve(user)
-      } catch (err) {
-        reject(`Error fetching user: ${err}`)
+      } catch {
+        reject(`User not found.`)
       }
     })
   }

@@ -1,10 +1,12 @@
 const express = require('express')
-const server = express()
 const cors = require('cors')
-const userRoutes = require('./controllers/users')
+const server = express()
 
+server.use(cors())
 server.use(express.json())
-server.use(cors('*'))
+server.use(express.urlencoded({ extended: true }))
+
+const userRoutes = require('./controllers/users')
 server.use('/users', userRoutes)
 
 server.get('/', (req, res) => {
