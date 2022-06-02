@@ -25,6 +25,5 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=shopuser
       - MONGO_INITDB_DATABASE=shopping
       - MONGO_INITDB_ROOT_PASSWORD=shoppass
-      - ME_CONFIG_MONGODB_URL="mongodb://shopuser:shoppass@server-db-1:27017/"
 volumes:
   dbdata:
