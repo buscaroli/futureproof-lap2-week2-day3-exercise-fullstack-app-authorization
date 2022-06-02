@@ -27,6 +27,37 @@ class User {
       }
     })
   }
+
+  static create(data) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const db = await init()
+        const userExists = await db
+          .collection('users')
+          .countDocuments({ email: data.email })
+
+        if (userExists) {
+          reject('Email address not available.')
+        } else {
+          const newUserObj = await db.collection('users').insertOne({
+            name: data.name,
+            email: data.email,
+            password: data.password,
+          })
+          console.log('newUserObj ', newUserObj)
+          const user = new User({
+            ...data,
+            id: newUserObj.insertedId,
+          })
+          console.log('user -> ', user)
+
+          resolve(user)
+        }
+      } catch {
+        reject('Unable to save user.')
+      }
+    })
+  }
 }
 
 module.exports = User

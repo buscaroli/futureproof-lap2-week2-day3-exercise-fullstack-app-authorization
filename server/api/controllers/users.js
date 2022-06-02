@@ -14,6 +14,15 @@ router.post('/', async (req, res) => {
   }
 })
 
-// router.post('/', async (req, res) => {})
+router.post('/add', async (req, res) => {
+  const payload = req.body
+  console.log('body', req.body)
+  try {
+    const addedUser = await User.create(payload)
+    res.send(addedUser)
+  } catch (err) {
+    res.status(500).send({ error: err })
+  }
+})
 
 module.exports = router
