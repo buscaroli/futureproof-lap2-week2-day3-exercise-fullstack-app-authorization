@@ -14,12 +14,12 @@ router.get('/:email', async (req, res) => {
   }
 })
 
-router.post('/add', async (req, res) => {
+router.post('/register', async (req, res) => {
   const payload = req.body
   console.log('body', req.body)
   try {
     const addedUser = await User.create(payload)
-    res.send(addedUser)
+    res.status(201).send(addedUser)
   } catch (err) {
     res.status(500).send({ error: err })
   }

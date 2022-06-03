@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const { init } = require('../dbConfig')
 const { ObjectId } = require('mongodb')
 
@@ -36,19 +37,26 @@ class User {
         if (userExists) {
           reject('Email address not available.')
         } else {
-          const newUserObj = await db.collection('users').insertOne({
-            name: data.name,
-            email: data.email,
-            password: data.password,
-          })
-          console.log('newUserObj ', newUserObj)
-          const user = new User({
-            ...data,
-            id: newUserObj.insertedId,
-          })
-          console.log('user -> ', user)
+          const saltRounds = 10
+          bcrypt.hash(data.password, saltRounds, async function (err, hash) {
+            if (err) {
+              reject(err)
+            } else {
+              const newUserObj = await db.collection('users').insertOne({
+                name: data.name,
+                email: data.email,
+                password: hash,
+              })
+              console.log('newUserObj ', newUserObj)
+              const user = new User({
+                ...data,
+                id: newUserObj.insertedId,
+              })
+              console.log('user -> ', user)
 
-          resolve(user)
+              resolve({ id: user.id, name: user.name, email: user.email })
+            }
+          })
         }
       } catch {
         reject('Unable to save user.')
