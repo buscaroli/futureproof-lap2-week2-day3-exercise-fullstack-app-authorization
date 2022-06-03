@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const { init } = require('../dbConfig')
+const jwt = require('jsonwebtoken')
 const { ObjectId } = require('mongodb')
 
 class User {
@@ -64,7 +65,7 @@ class User {
     })
   }
 
-  static delete(email) {
+  static delete({ name, email, password }) {
     return new Promise(async (resolve, reject) => {
       try {
         const db = await init()
@@ -81,6 +82,40 @@ class User {
         }
       } catch {
         reject('Unable to delete user.')
+      }
+    })
+  }
+
+  static login({ name, email, password }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const db = await init()
+        const foundUser = await db.collection('users').findOne({ email })
+
+        if (!foundUser) {
+          reject('User could not be found.')
+        } else {
+          bcrypt.compare(password, foundUser.password, (err, isEqual) => {
+            if (err) {
+              reject('Wrong Credentials.')
+            } else {
+              const token = jwt.sign(
+                {
+                  email,
+                  password,
+                },
+                process.env.TOKEN_PW,
+                {
+                  expiresIn: '1h',
+                }
+              )
+
+              resolve(token)
+            }
+          })
+        }
+      } catch {
+        reject('Unauthorised.')
       }
     })
   }
