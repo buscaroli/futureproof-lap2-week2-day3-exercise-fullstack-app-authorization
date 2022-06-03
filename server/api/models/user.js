@@ -63,6 +63,27 @@ class User {
       }
     })
   }
+
+  static delete(email) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const db = await init()
+        const userExists = await db
+          .collection('users')
+          .countDocuments({ email })
+        console.log('userExists: ', userExists)
+        if (!userExists) {
+          reject('User does not exists.')
+        } else {
+          const deletedUser = await db.collection('users').deleteOne({ email })
+          console.log('deletedUser: ', deletedUser)
+          resolve({ user: 'deleted' })
+        }
+      } catch {
+        reject('Unable to delete user.')
+      }
+    })
+  }
 }
 
 module.exports = User

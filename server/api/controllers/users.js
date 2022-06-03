@@ -25,4 +25,15 @@ router.post('/register', async (req, res) => {
   }
 })
 
+router.delete('/:email', async (req, res) => {
+  const payload = req.params.email
+  console.log('payload ', payload)
+  try {
+    const deletedUser = await User.delete(payload)
+    res.send(deletedUser)
+  } catch (err) {
+    res.status(406).send(err)
+  }
+})
+
 module.exports = router
